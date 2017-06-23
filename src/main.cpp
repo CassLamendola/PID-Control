@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   if (argc < 4){
     cerr << argv[0] << " Usage: \n";
     cerr << "\t " << argv[0] << " INITIAL_P INITIAL_I INITIAL_D \n";
-    cerr << "\t EXAMPLE: " << argv[0] << " 1 0 25" << endl;
+    cerr << "\t EXAMPLE: " << argv[0] << " 1 0 20" << endl;
     exit(1);
   }
 

@@ -31,7 +31,7 @@ Self-Driving Car Engineer Nanodegree Program
 1. Clone this repo.
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
-4. Run it: `./pid`. 
+4. Run it: `./pid initial_p initial_i initial_d`. (1 0 20)
 
 ## Editor Settings
 
@@ -88,3 +88,21 @@ that's just a guess.
 
 One last note here: regardless of the IDE used, every submitted project must
 still be compilable with cmake and make./
+
+## Reflection
+### 1. Describe the effect each of the P, I, D components had in your implementation. Is it what you expected?
+
+P - Proportional
+This makes the car steer in proportion to the cross track error (CTE). The proportional factor is called Kp and it is mulitplied by the CTE to calculate the steering angle. This results in the car overshooting the reference trajectory, then changing course and oscillating. Increasing Kp causes the vehicle to oscillate faster. I settled on a proportional factor of 1.0 for the PID controller.
+
+I - Integral
+The I component corrects systemic bias such as steering drift. The integral factor (Ki) is multiplied by sum of all the previous CTE. This wasn't an issue in the simulation, so Ki was set to 0. Increasing Ki by as little as 0.05 caused the vehicle to oscillate more drastically.
+
+D - Differential
+This component causes the steering angle to decrease as it reaches the reference trajectory. This allows the car to approach the trajectory "gracefully" rather than osclillating wildly. It is calculated by multiplying the differential factor (Kd) by the derivative of CTE. This is equal to CTE at timestep t - CTE at timestep t-1 divided by delta t. A larger Kd will result in the steering angle decreasing at a faster rate as it reaches the reference trajectory. The Kd value I used was 20.
+
+I was surprised at how large the differential factor needed to be in order to sucessfully drive around the track. In the Udacity lessons, the values Sebastian used were [0.2, 3.0, 0.004]. I expected to end up with a very small Kd value. However, that was not the case. The proportional value wasn't as surprising. In fact, a Kp value of 0.2 did work in the simulator, but 1.0 was better. The integral was also not surprising. I didn't think that steering drift would be an issue in the simulator because it would have needed to be specifically programmed that way.
+
+### 2. Describe how the final hyperparameters were chosen.
+
+I chose parameters through manual tuning. I started with the values that Sebastian used in the Udacity lessons. The car almost immediately drove off the track. I then set Ki equal to zero and adjusted Kp and Kd by small amounts. I started by decreasing just Kp, then increasing it by about 0.5 each time. This did little to improve the error. Then I adjusted Kd by the same amount, with no improvement. Next I started increasing Kd by factors of 10 until I got a result that did not drive off of the track (Kd = 10). I then went back to tuning Kp, settling on 1.0. Finally, I tuned Kd by smaller amounts until I settled at 20.
